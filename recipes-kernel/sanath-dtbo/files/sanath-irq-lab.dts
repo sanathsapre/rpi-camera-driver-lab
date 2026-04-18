@@ -1,0 +1,31 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2837";
+
+    fragment@0 {
+        target = <&gpio>;
+        __overlay__ {
+            sanath_irq_pins: sanath-irq-pins {
+                brcm,pins = <23>;
+                brcm,function = <0>;
+                brcm,pull = <2>;
+            };
+        };
+    };
+
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            sanath_irq_lab: sanath-irq-lab {
+                compatible = "sanath-irq-lab";
+                pinctrl-names = "default";
+                pinctrl-0 = <&sanath_irq_pins>;
+                interrupt-parent = <&gpio>;
+                interrupts = <23 2>;
+                status = "okay";
+            };
+        };
+    };
+};
