@@ -16,6 +16,7 @@
 #include <linux/mutex.h>
 #include <linux/stddef.h>
 #include <linux/version.h>
+#include <linux/pm_runtime.h>
 
 struct sanath_irq_data {
     int irq;
@@ -97,6 +98,9 @@ static int sanath_irq_probe(struct platform_device *pdev)
     platform_set_drvdata(pdev, data);
 
     dev_info(&pdev->dev, "sanath-irq-lab probed successfully\n");
+
+    pm_runtime_set_active(&pdev->dev);
+    pm_runtime_enable(&pdev->dev);
     return 0;
 }
 
@@ -105,6 +109,7 @@ static int sanath_irq_remove(struct platform_device *pdev)
     struct sanath_irq_data *data = platform_get_drvdata(pdev);
     cancel_work_sync(&data->work);
     dev_info(&pdev->dev, "sanath-irq-lab removed\n");
+    pm_runtime_disable(&pdev->dev);
     return 0;
 }
 
@@ -114,12 +119,31 @@ static const struct of_device_id sanath_irq_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, sanath_irq_of_match);
 
+static int sanath_runtime_suspend(struct device *dev)
+{
+    dev_info(dev, "runtime suspend\n");
+    return 0;
+}
+
+static int sanath_runtime_resume(struct device *dev)
+{
+    dev_info(dev, "runtime resume\n");
+    return 0;
+}
+
+
+static const struct dev_pm_ops sanath_pm_ops = {
+    .runtime_suspend = sanath_runtime_suspend,
+    .runtime_resume  = sanath_runtime_resume,
+};
+
 static struct platform_driver sanath_irq_driver = {
     .probe  = sanath_irq_probe,
     .remove = sanath_irq_remove,
     .driver = {
         .name           = "sanath-irq-lab",
         .of_match_table = sanath_irq_of_match,
+    	.pm = &sanath_pm_ops,
     },
 };
 
