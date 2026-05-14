@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+/ {
+	fragment@0 {
+		target-path = "/";
+		__overlay__ {
+			sanath_v4l2_node: sanath-v4l2 {
+			  compatible = "sanath-v4l2-lab";
+		  	};
+		};
+	};
+};
