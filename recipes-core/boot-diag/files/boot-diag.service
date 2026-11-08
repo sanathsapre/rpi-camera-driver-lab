@@ -1,0 +1,10 @@
+[Unit]
+Description=Write boot diagnostics to /home/root/boot-diag.txt
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/boot-diag.sh
+
+[Install]
+WantedBy=multi-user.target

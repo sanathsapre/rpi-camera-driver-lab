@@ -1,0 +1,15 @@
+[Unit]
+Description=Play boot video in a loop
+DefaultDependencies=no
+After=systemd-udevd.service
+Conflicts=shutdown.target
+Before=shutdown.target
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/usr/bin/boot-video.sh
+Restart=always
+RestartSec=0.5
+
+[Install]
+WantedBy=sysinit.target
